@@ -21,14 +21,14 @@ const mouse = {
 canvas.addEventListener("click", (event) => {
   mouse.x = event.x;
   mouse.y = event.y;
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     particleArray.push(new newCircle());
   }
 });
 canvas.addEventListener("mousemove", (event) => {
   mouse.x = event.x;
   mouse.y = event.y;
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 1; i++) {
     particleArray.push(new newCircle());
   }
 });
@@ -37,7 +37,7 @@ class newCircle {
   constructor() {
     this.x = mouse.x;
     this.y = mouse.y;
-    this.size = Math.random() * 6 + 1;
+    this.size = Math.random() * 10 + 1;
     this.speedX = Math.random() * 3 - 1.5;
     this.speedY = Math.random() * 3 - 1.5;
 
@@ -63,21 +63,29 @@ function handleParticle() {
   for (let i = 0; i < particleArray.length; i++) {
     particleArray[i].update();
     particleArray[i].draw();
+    for (let j = i; j < particleArray.length; j++) {
+      const dx = particleArray[i].x - particleArray[j].x;
+      const dy = particleArray[i].y - particleArray[j].y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 100) {
+        ctx.beginPath();
+        ctx.strokeStyle = particleArray[i].color;
+        ctx.lineWidth = 0.5;
+        ctx.moveTo(particleArray[i].x, particleArray[i].y);
+        ctx.lineTo(particleArray[j].x, particleArray[j].y);
+        ctx.stroke();
+      }
+    }
     if (particleArray[i].size <= 0.4) {
       particleArray.splice(i, 1);
       i--;
     }
-    // for (let j = i; j < 10; j++) {
-    //   const dx = particleArray[i] - particleArray[j];
-    //   const dy = particleArray[i] - particleArray[j];
-    //   const distance = Math.sqrt(dy / dx + dx * dy);
-    // }
   }
 }
 
 function animate() {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(0,0,0,0.1)";
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   handleParticle();
   hue += 5;
